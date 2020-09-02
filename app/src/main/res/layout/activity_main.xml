@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.keyidabj.sina.picture.widget.MyFramlatout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.keyidabj.sina.picture.widget.MyViewPager
+            android:id="@+id/viewpager_0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.keyidabj.sina.picture.widget.NestedParent
+            android:id="@+id/nested_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_content_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="600dp"
+                    android:gravity="bottom">
+
+                    <TextView
+                        android:id="@+id/tv_menu_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#90000000"
+                        android:padding="16dp"
+                        android:text="Android 11 即将发布！
+Beta 3 现已发布，这是我们正式发布 Android 11 之前的最后更新。现在是时候确保您的应用准备就绪了！获取进行兼容性测试所需的技术资源，并了解您可以围绕用户、控制权和隐私权打造的体验。"
+                        android:textColor="#ffffff" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_recyclerview_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.keyidabj.sina.picture.widget.MyRecyclerView
+                        android:id="@+id/recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </RelativeLayout>
+
+                <!--<androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="800dp"
+                    android:background="@android:color/white" />-->
+
+            </LinearLayout>
+
+        </com.keyidabj.sina.picture.widget.NestedParent>
+
+    </com.keyidabj.sina.picture.widget.MyFramlatout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="#aa03DAC5"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="@string/app_name" />
+
+</FrameLayout>
