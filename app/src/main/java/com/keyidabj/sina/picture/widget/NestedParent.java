@@ -3,6 +3,7 @@ package com.keyidabj.sina.picture.widget;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -27,6 +28,9 @@ public class NestedParent extends NestedScrollView {
     private RecyclerView mRecyclerView;
 
     private Handler mHandler;
+
+    private boolean isChildFlingInvoked;
+    private int scrollYAtActionDown;
 
     public NestedParent(Context context) {
         super(context);
@@ -159,6 +163,7 @@ public class NestedParent extends NestedScrollView {
             } else {
                 smoothScrollTo(0, maxScrollHeight);
             }
+            isChildFlingInvoked = true;
             return true;
         }
         return super.onNestedPreFling(target, velocityX, velocityY);
@@ -190,6 +195,25 @@ public class NestedParent extends NestedScrollView {
         return false;
     }
 
+    public void actionDownInChildView(){
+        Log.i(TAG, "actionDownInChildView");
+        isChildFlingInvoked = false;
+        scrollYAtActionDown = getScrollY();
+    }
+
+    public void actionUpInChildView(){
+        Log.i(TAG, "actionUpInChildView -- isChildFlingInvoked: " + isChildFlingInvoked);
+        if (!isChildFlingInvoked){
+            float scrollY = getScrollY();
+            if (scrollY > 0 && scrollY < maxScrollHeight){
+                if (scrollY > scrollYAtActionDown){
+                    smoothScrollTo(0, maxScrollHeight);
+                }else{
+                    smoothScrollTo(0, 0);
+                }
+            }
+        }
+    }
 
     /********************  滑动监听 *******************************/
 

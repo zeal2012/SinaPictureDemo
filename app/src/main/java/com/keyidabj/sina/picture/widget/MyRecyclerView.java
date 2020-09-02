@@ -13,12 +13,18 @@ public class MyRecyclerView extends RecyclerView {
 
     String TAG = "MyRecyclerView_";
 
+    private NestedParent mNestedParent;
+
     public MyRecyclerView(@NonNull Context context) {
         super(context);
     }
 
     public MyRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void setNestedParent(NestedParent nestedParent){
+        mNestedParent = nestedParent;
     }
 
     @Override
@@ -35,6 +41,19 @@ public class MyRecyclerView extends RecyclerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        return super.onTouchEvent(e);
+        boolean b = super.onTouchEvent(e);
+        switch (e.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                if (mNestedParent != null){
+                    mNestedParent.actionDownInChildView();
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mNestedParent != null){
+                    mNestedParent.actionUpInChildView();
+                }
+                break;
+        }
+        return b;
     }
 }

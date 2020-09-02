@@ -13,9 +13,9 @@ import android.widget.RelativeLayout;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.keyidabj.sina.picture.widget.MyRecyclerView;
 import com.keyidabj.sina.picture.widget.MyViewPager;
 import com.keyidabj.sina.picture.widget.NestedParent;
 
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MyPagerAdapter0 mAdapter0;
 
-    private RecyclerView mRecyclerview;
+    private MyRecyclerView mRecyclerview;
 
 
     private MyViewPager mViewPager0;
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         mScrollView = findViewById(R.id.nested_parent);
 
         mRecyclerview = findViewById(R.id.recyclerview);
+        mRecyclerview.setNestedParent(mScrollView);
         mRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         List<String> objects = new ArrayList<>();
         for (int i = 0; i<100; i++){
