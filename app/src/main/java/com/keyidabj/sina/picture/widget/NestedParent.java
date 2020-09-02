@@ -1,11 +1,13 @@
 package com.keyidabj.sina.picture.widget;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,16 +26,24 @@ public class NestedParent extends NestedScrollView {
     //    private View maxHeightView;
     private RecyclerView mRecyclerView;
 
+    private Handler mHandler;
+
     public NestedParent(Context context) {
         super(context);
+        init();
     }
 
     public NestedParent(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public NestedParent(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    private void init() {
+        mHandler = new Handler();
     }
 
 //    public void setMaxHeightView(View view) {
@@ -67,7 +77,6 @@ public class NestedParent extends NestedScrollView {
 //                    mScroller.abortAnimation();
 //                }
                 if (mRecyclerView != null) {
-                    mRecyclerView.isAnimating();
                     mRecyclerView.stopScroll();
                 }
                 abortAnimatedScroll();
@@ -80,14 +89,35 @@ public class NestedParent extends NestedScrollView {
     //对应子view 的dispatchNestedPreScroll方法， 最后一个数组代表消耗的滚动量，下标0代表x轴，下标1代表y轴
     @Override
     public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
-        super.onNestedPreScroll(target, dx, dy, consumed, type);
+        //super.onNestedPreScroll(target, dx, dy, consumed, type);
+        TLog.i(TAG, "onNestedPreScroll --dy :" + dy + " -- type : " + type);
 //        TLog.i.i(TAG, "onNestedPreScroll --- dy: " +dy);
         if (maxScrollHeight == 0) {
             super.onNestedPreScroll(target, dx, dy, consumed);
             return;
         }
-
         int scrollY = getScrollY();
+        //recyclerView向下fling时，如果滑倒了maxScrollHeight的高度，则停止滑动
+        if (type == ViewCompat.TYPE_NON_TOUCH
+                && dy < 0
+                && scrollY < maxScrollHeight) {
+
+            if (mRecyclerView == null) {
+                mRecyclerView = (RecyclerView) target;
+            }
+            mRecyclerView.stopScroll();
+            //多滑出来的部分，回弹回去
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    smoothScrollTo(0, maxScrollHeight);
+                }
+            });
+
+            TLog.i(TAG, "onNestedPreScroll --scrollY :" + scrollY + " -- maxScrollHeight : " + maxScrollHeight);
+            return;
+        }
+
         //向下滑动时
         if (dy > 0) {
             if (scrollY + dy <= maxScrollHeight) {
@@ -98,9 +128,16 @@ public class NestedParent extends NestedScrollView {
         }
     }
 
+    //0 TYPE_TOUCH
+    @Override
+    public void onNestedScroll(@NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type, @NonNull int[] consumed) {
+        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed);
+        //TLog.i(TAG, "onNestedScroll --dyConsumed :" + dyConsumed + " -- dyUnconsumed : " + dyUnconsumed + " -- consumed: " + consumed[1] + " -- type : " + type);
+    }
+
     @Override
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
-        TLog.i(TAG, "onNestedFling ----------------consumed : " + consumed);
+        TLog.i(TAG, "onNestedFling ----------------velocityY : " + velocityY);
         return super.onNestedFling(target, velocityX, velocityY, consumed);
     }
 
@@ -148,7 +185,7 @@ public class NestedParent extends NestedScrollView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        TLog.i(TAG_, getClass().getSimpleName() + "::onTouchEvent() -- ev: " + MainActivity.getActionType(ev.getAction()));
+        TLog.i(TAG, getClass().getSimpleName() + "::onTouchEvent() -- ev: " + MainActivity.getActionType(ev.getAction()));
         super.onTouchEvent(ev);
         return false;
     }
